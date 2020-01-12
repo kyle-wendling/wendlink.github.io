@@ -1,0 +1,41 @@
+digitspan.swf Movie Report
+---------------------------
+Frame #    Frame Bytes    Total Bytes    Scene
+-------    -----------    -----------    ----------------
+      1            190            190    Scene 1 (AS 2.0 Classes Export Frame)
+      2             17            207    
+      3             17            224    
+      4             17            241    
+      5             17            258    
+      6             17            275    
+      7             12            287    
+      8             11            298    
+      9             11            309    
+     10             11            320    
+     11             11            331    
+     12             11            342    
+
+Scene                        Shape Bytes    Text Bytes    ActionScript Bytes
+-------------------------    -----------    ----------    ------------------
+Scene 1                                0             0                     0
+
+Symbol                       Shape Bytes    Text Bytes    ActionScript Bytes
+-------------------------    -----------    ----------    ------------------
+Tween 1                                0             0                     0
+Tween 2                                0             0                     0
+one                                    0             0                     0
+four                                   0            32                     0
+two                                    0             0                     0
+three                                  0             0                     0
+question                               0             0                     0
+star_red                               0             0                     0
+star_yellow                            0             0                     0
+star_green                             0             0                     0
+star_blue                              0             0                     0
+star_white                             0             0                     0
+square                                 0             0                     0
+
+Font Name                 Bytes        Characters    
+----------------------    ---------    --------------
+Arial Greek Bold                 72    4
+

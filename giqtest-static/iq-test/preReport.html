@@ -1,0 +1,500 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+<script src="javascript/giqtest-utils.js"></script>
+
+<script>
+
+/** 
+ * Firebase
+ */
+firebaseInit(firebase);
+firebaseConnect(firebase);
+var didWrite = false;
+function writeComplete() { didWrite = true; console.log("async write complete");}
+updateTestAnswers(firebase, parent.frames['collect'], writeComplete); //write answers up till now
+
+function submitForm() {
+	//update answers in db, have to wait to return or it doesn't work
+	if(firebase) {
+		if(didWrite) document.actionForm.submit();
+		else setTimeout(function(){ submitForm(); }, 500); // if not done, wait a bit for db commit and try this function again
+	} else {
+		console.log("no firebase");		
+		document.actionForm.submit();
+	}
+	return false; //firebase hasn't finished yet              
+}
+
+
+
+function enableField(name) {
+
+document.actionForm.elements[name].disabled=false;
+    document.actionForm.elements[name].focus();
+}
+
+function doTimeout() {
+
+}
+
+var pF = parent.frames['collect'];
+var ps = pF.picSectionCollector; //shorten names
+var vs =pF.vocabularySectionCollector;
+var rs =pF.recallSectionCollector;
+var rbs =pF.recallBackwardsSectionCollector;
+var res =pF.relationshipSectionCollector;
+var as =pF.arithmeticSectionCollector;
+
+var params = { 
+ps, 
+vs, //vocabularySectionCollector
+rs, //recallSectionCollector
+rbs,//recallBackwardsSectionCollector
+res,//relationshipSectionCollector
+as//arithmeticSectionCollector
+};
+
+//put answers in firebase db
+var testKey = parent.frames['collect'].testKey;
+var currentTestRef = firebase.database().ref('test/' + testKey);
+
+// Attach an asynchronous callback to read the data at our posts reference, what a bunch of complex bollocks
+currentTestRef.on("value", function(snapshot) {
+  //console.log(snapshot.val());
+	var currentTest = snapshot.val();
+	currentTest["answers"] = params;
+	//console.log(currentTest);
+	var updates = {};
+	updates['test/' + testKey] = currentTest;
+	firebase.database().ref().update( updates ); //update the test w/ answer params
+	
+}, function (errorObject) {
+  console.log("firebase: The read failed: " + errorObject.code);
+});
+
+var testId = jQuery.param({testId: parent.frames['collect'].testId}); //add testId to query string
+var username = jQuery.param({username: parent.frames['collect'].username}); //add username to query string
+var email = jQuery.param({email: parent.frames['collect'].email}); //add testId to query string
+var paypal = jQuery.param({pp: (new Date).getTime()}); //add epoch time of complete as paypal ref, pp is key
+
+var answersParam = jQuery.param( params );
+
+var href = window.location.href;
+var returnURL = href.substring(0, href.lastIndexOf('/')) + "/";
+//console.log(returnURL);
+
+ returnURL +=
+	"finalReport.html?" + answersParam + "&" +testId+ "&" +username+ "&" +email + "&"+ paypal;  //warning hardcode
+  //console.log(returnURL, returnURL.length);
+
+</script>
+
+<title>GIQTest :: Test Complete</title><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="css/score.css" rel="stylesheet" type="text/css">
+<link href="css/test.css" rel="stylesheet" type="text/css"></head>
+
+<body leftmargin="0" topmargin="0" alink="#000000" link="#000000" text="#000000" vlink="#000000">
+	<script>
+	  if(!parent.frames['collect'].testmode) {
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-237477-1', 'auto');
+	  ga('send', 'pageview');
+}
+
+	</script>
+  <script>
+    if(parent.frames['collect'].testmode) { 
+        document.write("<h1>TEST MODE</h1>");
+      }
+  </script>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr class="menubackground"> 
+    <td class="HT" background="images/bar.gif" bgcolor="#ffffff"> <div align="left"><strong><img src="images/lefter.gif" height="29" width="8"><span class="T">GIQTest-Test 
+        Complete </span>- Report Generated<img src="images/righter.gif" height="29" width="8"></strong></div></td>
+  </tr>
+</tbody></table>
+<!-- full scale chart -->
+<span class="HT"> </span><br/>
+<table border="0">
+  <tbody><tr> 
+    <td width="10">&nbsp;</td>
+    <td> <div align="center"> 
+        <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="600">
+          <tbody><tr> 
+            <td width="8"><div align="right"><img src="images/lefter.gif" height="29" width="8"></div></td>
+            <td class="HT" background="images/bar.gif" height="29"> <div class="HT" align="center"><strong>Congratulations 
+                on Completing the GIQTest</strong></div></td>
+            <td width="8"><div align="left"><img src="images/righter.gif" height="29" width="8"></div></td>
+          </tr>
+          <tr> 
+            <td><div align="right"><img src="images/leftb.gif" height="8" width="8"></div></td>
+            <td background="images/barbottom.gif"><img src="images/barbottom.gif" height="8" width="8"></td>
+            <td><img src="images/rightb.gif" height="8" width="8"></td>
+          </tr>
+        </tbody></table>
+      </div></td>
+  </tr>
+</tbody></table>
+
+<br/>
+<table border="0">
+  <tbody><tr> 
+    <td width="10">&nbsp;</td>
+    <td> <div align="center"> 
+        <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="600">
+          <tbody><tr> 
+            <td><div class="largetextHighlight" align="right"><img src="images/lefterred.gif" height="29" width="8"></div></td>
+            <td colspan="2" class="HT" background="images/barred.gif"> <div class="T" align="center"><span class="T"><strong>About 
+                creating the GIQTest </strong></span><span class="HT">(You just 
+                took it!)</span></div></td>
+            <td><div class="largetextHighlight" align="left"><img src="images/righterred.gif" height="29" width="8"></div></td>
+          </tr>
+          <tr> 
+            <td rowspan="2" background="images/leftedge.gif" width="8"> <div align="right"></div></td>
+            <td colspan="2" class="RT"><div align="left"><strong><img src="images/blockpanel.jpg" height="29" width="183"></strong><strong><img src="images/blockpanel.jpg" height="29" width="183"></strong><strong><img src="images/blockpanel.jpg" height="29" width="183"></strong><br/>
+                <br/>
+                This is not just a fake test like the rest of the online IQ 
+                tests. The GIQTest Research Team consists of 3 post-graduate level 
+                researchers that spent over 1000 hours, creating, correlating, 
+                and norming this test to make it the most accurate and realistic 
+                IQ test online. Here is a breakdown of our methodology. <br/>
+                <br/>
+              </div></td>
+            <td rowspan="2" background="images/rightedge.gif">&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="RT" valign="top">&nbsp;</td>
+            <td class="RT" valign="top"> <table border="0">
+                <tbody><tr> 
+                  <td class="HT" width="400"><strong>Researching clinical IQ Tests</strong></td>
+                  <td class="HT" width="21">&nbsp;</td>
+                </tr>
+                <tr> 
+                  <td class="HT" valign="top"> <ul>
+                      <li class="HT">We examined the Stanford-Binet&reg; 3rd and 
+                        5th edition, Raven's Progressive Matrices&reg;, Kaufman 
+                        Brief Intelligence Test, CogAt, Reynolds Intellectual 
+                        Assessment Scales, Leiter International Performance Scale®, 
+                        WAIS&reg;, and Cattell IQ assessments.</li>
+                    </ul></td>
+                  <td class="HT"><img src="images/createdby.jpg" height="150" width="150"></td>
+                </tr>
+                <tr> 
+                  <td class="HT" valign="top"> <div align="left"><strong>Creating 
+                      the GIQTest</strong></div></td>
+                  <td class="HT" valign="top">&nbsp;</td>
+                </tr>
+                <tr> 
+                  <td class="HT" valign="top"> <ul>
+                      <li class="HT">We choose to model our sections after clinical 
+                        IQ test sections that have the highest correlation to 
+                        g (general intelligence) and are implementable online.</li>
+                      <li class="HT">We created each section to have similar characteristics 
+                        to a corresponding clinical IQ test section.</li>
+                      <li class="RT"><span class="HT">Each question was created 
+                        independently by the GIQTest team to measure specific 
+                        aspects of intelligence.<br/>
+                        </span> </li>
+                    </ul></td>
+                  <td class="HT"><img src="images/analog.jpg" height="150" width="150"></td>
+                </tr>
+                <tr> 
+                  <td class="HT"> <p><strong>Correlating the Test</strong></p></td>
+                  <td class="HT">&nbsp;</td>
+                </tr>
+                <tr> 
+                  <td class="HT" valign="top"> <ul>
+                      <li class="HT">We assembled a test group of over 50 users 
+                        that had taken a standardized IQ test.</li>
+                      <li class="HT">These users were administered the GIQTest 
+                        and their scores were compared.</li>
+                      <li>We correlated these scores section by section and adjusted 
+                        the GIQTest accordingly.</li>
+                      <li>Our final correlation has an r value greater than .9.</li>
+                    </ul></td>
+                  <td class="HT"><img src="images/correlation.jpg" height="150" width="150"></td>
+                </tr>
+                <tr> 
+                  <td class="HT"><strong>Norming the Test</strong></td>
+                  <td class="HT">&nbsp;</td>
+                </tr>
+                <tr> 
+                  <td class="HT" valign="top"> 
+                    <ul>
+                      <li class="HT">The scoring algorithm was adjusted to match 
+                        with our testers' corresponding clinical IQ scores.</li>
+                      <li class="HT">Our research team performed a broad beta 
+                        test (1000+ points) with Mensians and IQ takers from all 
+                        over the globe.</li>
+                      <li>We compared these results and made final adjustments.</li>
+                      <li>The GIQTest V1.4 content was finalized.</li>
+                    </ul></td>
+                  <td class="HT"><img src="images/norming.jpg" height="189" width="189"></td>
+                </tr>
+                <tr> 
+                  <td class="HT"><strong>Creating the Test Engine</strong></td>
+                  <td class="HT">&nbsp;</td>
+                </tr>
+                <tr> 
+                  <td class="HT" valign="top"> <ul>
+                      <li class="HT">The engine for the GIQTest is complex, it 
+                        allows for advanced question types and behaviors.</li>
+                      <li>The engine takes into account various factors such as 
+                        weighting, section timing, and question timing.</li>
+                      <li>Creating the full scale score requires statistical modeling 
+                        and a complex algorithm.</li>
+                    </ul></td>
+                  <td class="HT"><img src="images/creating.jpg" height="150" width="150"></td>
+                </tr>
+                <tr> 
+                  <td class="HT"><strong>Creating the Reporting</strong></td>
+                  <td class="HT">&nbsp;</td>
+                </tr>
+                <tr> 
+                  <td class="HT"> <ul>
+                      <li class="HT">We created the report to provide the best 
+                        possible interpretation of your score online.</li>
+                      <li class="HT">Full scale score is accurate to within 4% 
+                        of clinically proctored IQ test.<br/>
+                        We included all section scores, comparisons of abilities, 
+                        and strengths and weaknesses.</li>
+                      <li class="HT">Comparison of Verbal vs Performance intelligence 
+                        types.</li>
+                      <li class="HT">Describes the meaning if IQ scores.</li>
+                      <li class="HT">All analysis is modeled after practices in 
+                        interpreting the S-B® V as described in <em>Essentials 
+                        of Stanford-Binet Intelligence Scales (SB5) Assessment</em></li>
+                    </ul></td>
+                  <td class="HT"><img src="images/reporting.jpg" height="150" width="150"></td>
+                </tr>
+              </tbody></table>
+              <br/> <strong><img src="images/blockpanel.jpg" height="29" width="183"></strong><strong><img src="images/blockpanel.jpg" height="29" width="183"></strong><strong><img src="images/blockpanel.jpg" height="29" width="183"></strong> 
+            </td>
+          </tr>
+          <tr> 
+            <td><div align="right"><img src="images/leftb.gif" height="8" width="8"></div></td>
+            <td colspan="2" background="images/barbottom.gif"><img src="images/barbottom.gif" height="8" width="8"></td>
+            <td><img src="images/rightb.gif" height="8" width="8"></td>
+          </tr>
+        </tbody></table>
+      </div></td>
+  </tr>
+</tbody></table>
+<br/>
+<br/>
+<table border="0">
+  <tbody><tr> 
+    <td width="10">&nbsp;</td>
+    <td> <div align="center"> 
+        <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="600">
+          <tbody><tr> 
+            <td><div class="largetextHighlight" align="right"><img src="images/lefterred.gif" height="29" width="8"></div></td>
+            <td colspan="2" class="HT" background="images/barred.gif"> <div align="center"><strong>GIQTest 
+                Comprehensive Report</strong><span class="ST"></span></div></td>
+            <td><div class="largetextHighlight" align="left"><img src="images/righterred.gif" height="29" width="8"></div></td>
+          </tr>
+          <tr> 
+            <td rowspan="2" background="images/leftedge.gif" width="8"> <div align="right"></div></td>
+            <td colspan="2" class="RT"><div align="left"></div></td>
+            <td rowspan="2" background="images/rightedge.gif">&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="B2" width="200"> <div align="center"><span class="HT"><strong>Report 
+                Sample Excerpts</strong></span><span class="RT"><br/>
+                (click to open larger preview)</span><br/>
+                <span class="RT">Accurate full score</span><br/>
+                <a href="#"><img onclick="window.open('images/samplereport1.jpg');" src="images/samplereportsmall1.jpg" border="0" height="140" width="140"></a> 
+                <br/>
+                <span class="RT">Section Scores</span><br/>
+                <a href="#"><img onclick="window.open('images/samplereport2.jpg');" src="images/samplereportsmall2.jpg" border="0" height="140" width="140"></a><br/>
+                <span class="RT">Meaning of IQ</span><img onclick="window.open('images/samplereport3.jpg');" src="images/samplereportsmall3.jpg" border="0" height="140" width="140"> 
+                <br/>
+              </div></td>
+            <td class="RT" valign="top"> <table border="0">
+                <tbody><tr> 
+                  <td class="HT"><strong>Get the Full Test Report</strong></td>
+                </tr>
+                <tr> 
+                  <td class="HT"> <ul>
+                      <li class="HT">Your accurate full scale <strong>score</strong> 
+                        and description</li>
+                      <li class="HT">Your <strong>section</strong> scores</li>
+                      <li class="HT"><strong>Compare</strong> strengths and weaknesses 
+                        of abilities</li>
+                      <li class="HT"><strong>Compare</strong> verbal and performance 
+                        score</li>
+                      <li class="HT"><strong>Comprehensive</strong> section by 
+                        section breakdown.</li>
+                      <li><strong>Meaning and interpretation of your</strong> of IQ Score</li>
+                      <li>Discover your mental strengths and weaknesses, are your abilities are <strong>balanced?</strong>.</li>
+                    </ul></td>
+                </tr>
+                <tr> 
+                  <td class="HT"> <p align="left">Cost <span class="RT">$10</span> 
+                      <span class="ST">(1/20 the cost of a proctored IQ test)</span><br/>
+                      <br/>
+                      Get your Score and Full Report: 
+                      <input onclick="javascript:submitForm();" src="images/buyNow.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" border="0" type="image">
+                      <br/><br/><br/>
+                      <span class="ST">You will be forwarded to your results immediately after completing the paypal process</span>
+
+                      <br/><br/>
+                      <input onclick="javascript:submitForm();" src="images/payment-paypal.png" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" border="0" type="image">
+                      
+
+                      <span class="ST"><br/>
+                      </span></p></td>
+                </tr>
+                <tr> 
+                  <td class="HT"><br/> <br/> <br/> <br/> <br/> <span class="RT">Please 
+                    help support the GIQTest and our research efforts as opposed to fake 
+                    online IQ tests (tickle.com, ivillage, www.iqtest.com, 
+                    etc). <em><br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    "We thank you for your support"</em> - <a href="mailto:research@giqtest.com" class="ST">The 
+                    GIQTest Research Team.</a></span></td>
+                </tr>
+              </tbody></table></td>
+          </tr>
+          <tr> 
+            <td><div align="right"><img src="images/leftb.gif" height="8" width="8"></div></td>
+            <td colspan="2" background="images/barbottom.gif"><img src="images/barbottom.gif" height="8" width="8"></td>
+            <td><img src="images/rightb.gif" height="8" width="8"></td>
+          </tr>
+        </tbody></table>
+      </div></td>
+  </tr>
+</tbody></table>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<table border="0">
+  <tbody><tr> 
+    <td width="10">&nbsp;</td>
+    <td> <div align="left"></div>
+      <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="600">
+        <tbody><tr> 
+          <td><div align="right"><img src="images/lefter.gif" height="29" width="8"></div></td>
+          <td class="HT" background="images/bar.gif" height="29"> <div class="HT" align="left"></div></td>
+          <td><div align="left"><img src="images/righter.gif" height="29" width="8"></div></td>
+        </tr>
+        <tr> 
+          <td background="images/leftedge.gif" width="8">&nbsp; </td>
+          <td class="RT"> Why don't you offer the free score anymore? <br/>
+            <br/>
+            As stated on the instruction page, main page, and about page, the 
+            report/score costs $10.<br/>
+            <br/>
+            We offered a free evaluation for a long time during our extensive 
+            norming and testing trials; this phase is now complete. Consider getting 
+            the full report. We spent over 1000 hours creating, norming, correlating, 
+            and coding this test. The report is a great value, and it contains 
+            information everyone should know about themselves. If you are not 
+            satisfied with your effort, you may retake the GIQTest at any time 
+            (at no extra charge).<br/>
+            <br/>
+            We charge for two main reasons.<br/>
+            1) We&#8217;re obviously trying to recoup some of the initial cost 
+            of developing this test (over 1000 hours of research and testing), 
+            not to mention bandwidth and hosting.<br/>
+            2) Our ongoing correlation and norming goals are best met if the test 
+            taking effort is high.<br/> <br/>
+            The GIQTest is far more realistic and advanced than anything else 
+            online. The Full Scale correlates within 4% of our test groups' clinical 
+            IQ test score. A clinically proctored IQ test can cost as much as 
+            $200, this test report is only $10. We offer this test in educational 
+            institutions for as much as $40.<br/>
+          </td>
+          <td background="images/rightedge.gif" width="8">&nbsp;</td>
+        </tr>
+        <tr> 
+          <td><div align="right"><img src="images/leftb.gif" height="8" width="8"></div></td>
+          <td background="images/barbottom.gif"><img src="images/barbottom.gif" height="8" width="8"></td>
+          <td><img src="images/rightb.gif" height="8" width="8"></td>
+        </tr>
+      </tbody></table></td>
+  </tr>
+</tbody></table>
+<br/>
+<br/>
+<br/>
+<table border="0">
+  <tbody><tr> 
+    <td width="10">&nbsp;</td>
+    <td> <div align="left"></div>
+      <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="600">
+        <tbody><tr> 
+          <td><div align="right"><img src="images/lefter.gif" height="29" width="8"></div></td>
+          <td class="HT" background="images/bar.gif" height="29"> <div class="HT" align="left"></div></td>
+          <td><div align="left"><img src="images/righter.gif" height="29" width="8"></div></td>
+        </tr>
+        <tr> 
+          <td background="images/leftedge.gif" width="8">&nbsp; </td>
+          <td class="RT"> If you are a member of Mensa and/or have taken a clinically 
+            proctored IQ test (WAIS, Stanford-Binet, etc) you can get your score/report 
+            for no charge (once we verify your info). Send your name, GIQTest 
+            ID, proctored IQ exam score, and contact info for the party that administered 
+            the exam <a href="mailto:research@giqtest.com">here</a>. Thanks again 
+            to everyone who helped norm this test.<br/>
+          </td>
+          <td background="images/rightedge.gif" width="8">&nbsp;</td>
+        </tr>
+        <tr> 
+          <td><div align="right"><img src="images/leftb.gif" height="8" width="8"></div></td>
+          <td background="images/barbottom.gif"><img src="images/barbottom.gif" height="8" width="8"></td>
+          <td><img src="images/rightb.gif" height="8" width="8"></td>
+        </tr>
+      </tbody></table></td>
+  </tr>
+</tbody></table>
+<!--form action="https://www.paypal.com/cgi-bin/webscr" method="post"> -->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" name="actionForm">
+  <input name="cmd" value="_xclick" type="hidden">
+  <input name="business" value="iqtest@giqtest.com" type="hidden" id="paypalAccount">
+  <input name="image_url" value="ttp://giqtest.com//images/giqtest/guide.jpg" type="hidden">
+  <input name="item_name" value="GIQTest Full Report" type="hidden">
+  <input name="item_number" value="giqtestfullfast" type="hidden">
+  <input name="amount" value="10.63" type="hidden">
+  <input name="no_shipping" value="1" type="hidden">
+  <input name="no_note" value="1" type="hidden">
+  <input name="currency_code" value="USD" type="hidden">
+  <input name="custom" value="" type="hidden" id="paypalItemNum">
+  <input name="TRYTOBUYREPORT" value="TRYTOBUYREPORT" type="hidden">
+  <input name="return" value="" type="hidden" id="returnUrlInput">
+</form>
+
+<script src='https://www.paypalobjects.com/js/external/dg.js' type='text/javascript'></script>
+<script>
+	document.getElementById('returnUrlInput').value = returnURL; //set the playpal return URL, the report page
+  document.getElementById('paypalItemNum').value = parent.frames['collect'].testId; //set custom test id
+  //testmode
+  if(parent.frames['collect'].testmode) 
+      { document.getElementById('paypalAccount').value = "iqtest-testing@giqtest.com"; }
+
+	var dg = new PAYPAL.apps.DGFlow(
+	{
+		trigger: 'paypal_submit',
+		expType: 'instant'
+		 //PayPal will decide the experience type for the buyer based on his/her 'Remember me on your computer' option.
+	});
+
+</script>
+</body></html>

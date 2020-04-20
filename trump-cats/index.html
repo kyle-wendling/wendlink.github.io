@@ -169,8 +169,8 @@ spooky-masks.netlify.com
         console.log("catify starting...")
         console.time('loadmodels');
         await Promise.all([
-            faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-            faceapi.nets.faceLandmark68TinyNet.loadFromUri("/models"),
+            faceapi.nets.tinyFaceDetector.loadFromUri("./models"),
+            faceapi.nets.faceLandmark68TinyNet.loadFromUri("./models"),
         ]).catch(error => {
             console.error(error)
         })

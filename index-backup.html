@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- META INFORMATION -->
+    <title>Spaced Quest</title>    
+    <meta charset="utf-8"/>
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Adventure Game Space Quest">
+    <meta name="keywords" content="Kyle Wendling, Adventure, Point and Click">
+    <meta name="author" content="Kyle Wendling">
+    <meta name="copyright" content="KRW">   
+	
+	<!-- SETUP MOBILE VIEWPORT & DISABLE TAP HIGHLIGHT COLOR ON WINDOWS MOBILE -->
+    <meta name="msapplication-tap-highlight" content="no"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    
+    <!-- JAGUAR CSS -->
+    <link rel="stylesheet"  href="Jaguar/css/jquery-Jaguar-3.3.css" type="text/css" media="all" />
+
+	<!-- DEMO GAME CSS -->
+    <link rel="stylesheet" type="text/css" href="Jaguar/css/game.css"/>    
+
+	<!-- LOAD JQUERY -->
+	<script src="Jaguar/js/jquery-2.1.3.min.js"></script>
+
+	<!-- LOAD JAGUAR MODULES -->
+	<script src="Jaguar/js/jquery-jaguar-3.3.js"></script>
+	<script src="Jaguar/js/debug.js"></script>
+	<script src="Jaguar/js/physics.js"></script>
+	<script src="Jaguar/js/scene.js"></script>
+	<script src="Jaguar/js/environment.js"></script>    
+	<script src="Jaguar/js/characters.js"></script>
+	<script src="Jaguar/js/items.js"></script>
+	<script src="Jaguar/js/actions.js"></script>
+	<script src="Jaguar/js/secondary_actions.js"></script>
+	<script src="Jaguar/js/dialogue.js"></script>
+	<script src="Jaguar/js/parser.js"></script>
+	<script src="Jaguar/js/cutscenes.js"></script>
+	<script src="Jaguar/js/save_load.js"></script>
+	<script src="Jaguar/js/audio.js"></script>
+    
+	<script type="text/javascript">
+		$(document).ready(function(){ 
+			$('#monkey_island').Jaguar({
+				"skin":"monkey_island",
+				"title":"Spaced Quest",
+				"player_name":"Sally Ride",
+				"player_stats":["Jumpsuit=750/1000, Piloting=1000/1000, Science=1000/1000, Engineering=900/1000, Towel=0/500, Right Stuffness=200/200"]			
+			}); 
+		});
+	</script>
+</head><body>
+
+<!-- MUST USE A WRAPPER TO POSITION AND STYLE GAME -->
+<div id="wrapper">
+	<div id="monkey_island">
+    
+		<!-- ************************************************************************* -->
+		<!-- INITIAL TEASER TEXT -->
+		<!-- ************************************************************************* -->
+        <div id="JAG_Teaser">
+            <img src="Jaguar/chars/guybrush_open_right.gif">
+	    	<h1>Turn yer speakers up and <br/> click to begin the Adventure!</h1>
+		</div>         
+
+		<!-- ************************************************************************* -->
+		<!-- MAIN CHAPTER - SPRITE IMAGES LOADED HERE WILL BE INHERITED IN ALL SCENES -->
+		<!-- ************************************************************************* -->        
+    	<ul class="JAG_Chapter" data-chapter='{
+           	"image":"bea-right",
+			"talk_image":"guybrush_talking_right",                     
+            "pick_up_up":"guybrush_pick_up_up",                 
+            "give_image":"guybrush_open_left",
+			"open_image":"guybrush_open_left", 				            
+            "right":"bea-walk-right,bea-right", 	
+            "left":"bea-walk-left,bea-left",
+            "down":"bea-walk-down,bea-down",    	
+            "up":"bea-walk-up,bea-up",
+            "talk_right":"bea-down", 			
+            "talk_left":"bea-down", 
+            "talk_down":"bea-down",        	
+            "talk_up":"bea-down",
+            "pick_up":"guybrush_pick_up_down",          	
+            "pick_up_left":"guybrush_pick_up_left",
+            "pick_up_down":"guybrush_pick_up_down",     	
+            "pick_up_right":"guybrush_pick_up_right",
+            "give_left":"guybrush_open_left", 				
+            "give_right":"guybrush_open_right",
+            "open_left":"guybrush_open_left",  		        
+            "open_right":"guybrush_open_right",            
+			"use_image":"guybrush_open_left",
+            "use_left":"guybrush_open_left",
+            "use_right":"guybrush_open_right",
+            "use_down":"guybrush_open_right",
+            "use_up":"guybrush_open_left",
+            "text_color":"#00fcff"
+		}'>
+
+
+   			<!-- ************************************************************************* -->
+    		<!-- OPENING SEQUENCES -->
+   			<!-- ************************************************************************* -->
+   			<!-- 
+
+
+            <!-- ************************************************************************* -->
+    		<!-- SPACE PORT
+   			<!-- ************************************************************************* -->
+
+	    	<li id="scene1" data-scene='{
+            	"background":"space-port.png","horizon":"30,100",
+                "subtitle":"Get to the ship!", "subtitle_speed":"700,4500", "subtitle_color":"#ffff00", "subtitle_pos":"55"}'>
+
+
+            	<!-- MAIN CHARACTER -->
+    	        <div class="JAG_Char" data-character='{
+                	"scale":"0.4,0.5", "pos":"10,88", "speed":6500,
+                	"entrance":[
+                    	["repeat_count:1"],
+                        ["walk_to:10,90,500"],
+                    	["say_after:well..."]]}'></div>
+                        
+				<!-- DEMO GIF -->
+				<div class="JAG_Aux_Char screen_demo" data-character='{
+                    "image":"mod-skew-screen","talk_image":"mod-skew-screen",
+   	                "pos":"57.4,23","proximity":200,"scale":"1,1","text":"demo"}'></div>
+
+                <!-- SCOPE -->
+                    
+                <!-- LAYER OBJECTS (PLANTS) FOR DEPTH -->
+<!--                 <div class="JAG_Item s1_bush2" data-item='{"text":"s1_bush2", "show_name":false,
+                	"image":"scene1_bush2", "pos":"0,0", "type":"layer"}'></div>
+                <div class="JAG_Item s1_bush3" data-item='{"text":"s1_bush3", "show_name":false,
+                	"image":"scene1_bush3", "pos":"63.6,8.85", "type":"layer"}'></div>
+-->
+
+                <!-- EXITS -->
+                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"55,30", "goto":"inshipfun", 
+                	"text":"I can fly one of these", "next_image":"bea-down"}'></div>
+
+	        </li>
+            
+            
+   			<!-- ************************************************************************* -->
+    		<!-- SPACE FLIGHT -->
+   			<!-- ************************************************************************* -->
+   	
+            <li id="inshipfun" data-scene='{
+            	"cutscene":true, "ambient":"earth_below_us", "loop_music":true,  
+                "display_time":"4600", "speed":"700,500", 
+                "background":"inshipfun-scene.jpg"}'></li>
+ 			<!-- 
+            <li id="space" data-scene='{
+            	"cutscene":true, "loop_music":false,  
+                "display_time":"4600", "speed":"700,500", 
+                "background":"casini.png","foreground":"2_foreground.png"}'></li> -->
+            
+            
+            <!-- ************************************************************************* -->
+    		<!-- SPACE FLIGHT SATURN
+   			<!-- ************************************************************************* -->            
+	    	<li id="scene2" data-scene='{
+            	"background":"cassini.jpg", "horizon":"-10,120",
+                "ambient":"earth_below_us", "ambient_volume":0.1, "ambient_vol_speed":250}'>
+
+                <!-- MAIN CHARACTER -->
+    	        <div class="JAG_Char" data-character='{
+					"image":"spaceship-zoom","talk_image":"spaceship-zoom",
+					"right":"spaceship-zoom,spaceship-zoom", 	
+		            "left":"spaceship-zoom,spaceship-zoom",
+		            "down":"spaceship-zoom,spaceship-zoom",    	
+		            "up":"spaceship-zoom,spaceship-zoom",
+                	"scale":"1,1", "pos":"-50,80", "speed":9000,
+                    "entrance":[
+                    	["walk_to:100,80,100"]],
+                    	"direction":"down"}'></div>   
+               	<div class="JAG_Item s2_exit1" data-item='{"type":"exit", "pos":"99,75", "goto":"crashsite", 
+                	"text":"coming in for landing...", "next_image":"bea-down"}'></div>
+            </li>
+
+
+            
+            <!-- ************************************************************************* -->
+    		<!-- CRASH ON PLANET
+   			<!-- ************************************************************************* -->            
+	    	<li id="crashsite" data-scene='{
+            	"background":"crash.png", "horizon":"-10,120"}'>
+
+                <!-- MAIN CHARACTER -->
+    	        <div class="JAG_Char" data-character='{
+                	"scale":"0.25,0.45", "pos":"48,75", "speed":8000,
+                    "entrance":[
+                    	["walk_to:48,78,500"],
+                    	["say_after:...tada"]], "direction":"down"}'></div>   
+
+                <!-- EXIT -->
+               	<div class="JAG_Item s2_exit1" data-item='{"type":"exit", "pos":"97,75", "goto":"planet", 
+                	"text":"red planet", "next_image":"bea-up", "next_pos":"12,90"}'></div>
+            </li>
+       
+            <!-- ************************************************************************* -->
+    		<!-- PLANET WALK - petite prince
+   			<!-- ************************************************************************* -->            
+	    	<li id="planet" data-scene='{
+            	"background":"planet.jpg", "horizon":"-10,120","horizon":"35,110",
+				"ambient":"yann-cover", "ambient_volume":0.1, "ambient_vol_speed":250
+                }'>
+
+                <!-- MAIN CHARACTER -->
+    	        <div class="JAG_Char" data-character='{
+                	"scale":"0.25,0.45", "pos":"5,96", "speed":8000,
+                    "entrance":[
+						["walk_to:8,86,500"],
+                    	["say_after:bonsoir"]], "direction":"up"}'></div>   
+
+                <!-- EXITS -->
+                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"94,73", "goto":"spaceport", 
+                	"text":"hive of scum", "next_image":"bea-down"}'></div>
+
+            </li>
+         
+            <!-- ************************************************************************* -->
+    		<!-- CASA BONITA
+   			<!-- ************************************************************************* -->            
+	    	<li id="spaceport" data-scene='{
+            	"background":"casa-bonita.jpg", "foreground":"casa-bonita-foreground.png", "horizon":"35,110"
+                }'>
+
+                <!-- MAIN CHARACTER -->
+    	        <div class="JAG_Char" data-character='{
+                	"scale":"0.15,0.45", "pos":"5,96", "speed":8000,
+                    "entrance":[
+						["walk_to:25,96,500"],
+                    	["say_after:...sure could go for some sopapillas and cliff diving!"]], "direction":"down"}'></div>   
+
+		                <!-- EXITS -->
+		                <div class="JAG_Item ss_exit1" data-item='{"type":"exit", "pos":"50,60", "goto":"bar", 
+		                	"text":"Casa bonita!", "next_image":"bea-down"}'></div>
+		                <div class="JAG_Item ss_exit2" data-item='{"type":"exit", "pos":"4,85", "goto":"planet", "text":"you can never go back...", "next_image":"bea-down"}'></div>		
+            </li>
+            
+            <!-- ************************************************************************* -->
+    		<!-- WEATHER UP
+   			<!-- ************************************************************************* -->            
+	    	<li id="bar" data-scene='{
+            	"background":"adventure-fun.jpg","horizon":"40,110"
+                }'>
+
+                <!-- MAIN CHARACTER -->
+    	        <div class="JAG_Char" data-character='{
+                	"scale":"0.33,2.5", "pos":"50,99", "speed":8000,
+                    "entrance":[
+						["walk_to:49,95,500"],
+                    	["say_after:...hmm, k"]
+						], "direction":"down"}'></div>   
+
+		                <!-- EXITS -->
+		                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"20,44", "goto":"theend", 
+		                	"text":"what will it be?", "next_image":"bea-left"}'></div>
+		                <div class="JAG_Item s1_exit2" data-item='{"type":"exit", "pos":"50,98", "goto":"spaceport", 
+		                	"text":"hive of scum", "next_image":"bea-down"}'></div>		
+            </li>
+            
+            <!-- ************************************************************************* -->
+    		<!-- THEEND
+   			<!-- ************************************************************************* -->            
+	    	<li id="theend" data-scene='{
+            	"background":"the-end.jpg", "horizon":"40,110",
+                "subtitle":"Wow, hello stranger, no idea how you got here, but email x-spaced@wendlink.com for a prize.", "subtitle_speed":"200,500000", "subtitle_color":"#ffffff", "subtitle_pos":"10", "subtitle_repeat":true}'>
+
+                <!-- MAIN CHARACTER -->
+    	        <div class="JAG_Char" data-character='{
+                	"scale":"1.0,1.2", "pos":"90,80", "speed":8000,
+                    "entrance":[
+						["walk_to:80,80,500"],
+                    	["say_after:..."]], "direction":"left"}'></div> 
+
+
+		                <!-- EXITS -->
+		                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"94,73", "goto":"bar", 
+		                	"text":"outta here", "next_image":"bea-down"}'></div>
+	
+            </li>                
+                
+                
+	    </ul><!-- END CHAPTER -->
+	</div><!-- END GAME -->
+</div><!-- END GAME WRAPPER -->          
+</body></html>

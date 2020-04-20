@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<!-- mod from url=(0033)https://spooky-masks.netlify.com/ 
+
+spooky-masks.netlify.com
+ -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style data-href="/styles.a3187fb24b8af544956f.css">
+        body {
+        font-family: sans-serif
+    }
+
+    header {
+        margin: 80px auto 0;
+        max-width: 90vw
+    }
+
+    h1 {
+        line-height: 1;
+        margin: 0
+    }
+
+    header button {
+        background: rgba(0, 255, 0, .8);
+        border: 1px solid green;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 700;
+        -webkit-text-decoration: uppercase;
+        text-decoration: uppercase;
+        padding: 5px 20px
+    }
+
+    .content {
+        position: relative;
+        margin: 0 auto;
+        max-width: 90vw;
+        width: 900px
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 20px;
+        margin: 50px auto;
+        max-width: 90vw
+    }
+
+    @media (min-width:500px) {
+        .grid {
+            grid-template-columns: repeat(2, 1fr)
+        }
+    }
+
+    @media (min-width:800px) {
+        .grid {
+            grid-template-columns: repeat(3, 1fr)
+        }
+    }
+
+    .grid-item {
+        max-width: 100%;
+        position: relative
+    }
+
+    .grid-item img {
+        width: 100%
+    }
+
+    .grid-item small {
+        display: block;
+        font-size: 12px;
+        letter-spacing: .2em;
+        line-height: 1;
+        margin-top: 5px;
+        text-transform: uppercase
+    }
+
+    .grid-item small a {
+        color: #666;
+        text-decoration: none
+    }
+
+    .frame {
+        position: relative;
+        left: 0;
+        top: 0
+    }
+
+    .image-overlay {
+        position: absolute
+    }
+
+    footer {
+        color: #444;
+        font-size: 16px;
+        margin: 0 auto 40px;
+        max-width: 90vw;
+        text-align: center
+    }
+
+    footer a {
+        color: inherit
+    }
+    </style>
+    <script src="face-api.js"></script>
+    <script type="text/javascript">
+    // SETTINGS
+    var img_test = 25;
+    // SETTINGS
+
+    const getOverlayValues = landmarks => {
+        console.log("catify getOverlayValues...")
+
+        const nose = landmarks.getNose()
+        const jawline = landmarks.getJawOutline()
+
+        const jawLeft = jawline[0]
+        const jawRight = jawline.splice(-1)[0]
+        const adjacent = jawRight.x - jawLeft.x
+        const opposite = jawRight.y - jawLeft.y
+        const jawLength = Math.sqrt(Math.pow(adjacent, 2) + Math.pow(opposite, 2))
+
+        // Both of these work. The chat believes atan2 is better.
+        // I don't know why. (It doesn’t break if we divide by zero.)
+        // const angle = Math.round(Math.tan(opposite / adjacent) * 100)
+        const angle = Math.atan2(opposite, adjacent) * (180 / Math.PI)
+        const width = jawLength * 2.2
+
+        return {
+            width,
+            angle,
+            leftOffset: jawLeft.x - width * 0.27,
+            topOffset: nose[0].y - width * 0.47,
+        }
+    }
+
+    const getRandomMask = masks => {
+        console.log("catify getRandomMask...")
+        const index = Math.floor(masks.length * Math.random())
+        return masks[index]
+    }
+
+    function setup_images(masks) {
+        
+        var grid_div = document.querySelectorAll(".grid")[0];
+        console.log(grid_div);
+        var pics = 20;
+        for (var i = 1; i < img_test; i++) {
+            var div_pic = document.createElement("div");
+            div_pic.className = 'grid-item';
+            var img = document.createElement("img");
+            var xz = (i < 10) ? '0' : '';
+            img.src = "/trump/trump_0" + xz + i + ".jpg";
+            console.log(div_pic, grid_div);
+            div_pic.appendChild(img);
+            grid_div.appendChild(div_pic);
+        }
+        return true;
+    }
+
+
+    async function catify(masks) {
+        console.log("catify starting...")
+        console.time('loadmodels');
+        await Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+            faceapi.nets.faceLandmark68TinyNet.loadFromUri("/models"),
+        ]).catch(error => {
+            console.error(error)
+        })
+        console.log("models loaded")
+        console.timeEnd('loadmodels');
+
+        const items = document.querySelectorAll(".grid-item"); //change this to all images
+
+        console.time('detect');
+        console.time('detect no landmarks');
+
+        const last_item = items[items.length]
+
+        //main loop, go through each image and run face classifier on it
+        items.forEach(async item => {
+            const originalImage = item.querySelector("img")
+            console.log("catify processing", originalImage)
+
+            const scale = originalImage.width / originalImage.naturalWidth
+
+            const testTiming = (oldImage, newImage) => async () => {
+                console.log("testTiming", originalImage)
+
+                const no_land_detect = await faceapi.detectSingleFace(newImage, new faceapi.TinyFaceDetectorOptions());
+
+                if (!no_land_detect) {
+                    return
+                }
+                if (items[items.length - 1].querySelector("img") == item.querySelector("img")) {
+                    console.timeEnd('detect no landmarks');
+                }
+            }
+
+            const handleImage = (oldImage, newImage) => async () => {
+                const detection = await faceapi
+                    .detectSingleFace(newImage, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks(true)
+
+                if (!detection) {
+                    console.log("handleImage no detection for", originalImage);
+                    return
+                }
+
+                if (items[items.length - 1].querySelector("img") == item.querySelector("img")) {
+                    console.timeEnd('detect', 'complete');
+                } //break on finish
+
+                //console.log("handleImage",detection.landmarks);
+
+                const overlayValues = getOverlayValues(detection.landmarks)
+                const overlay = document.createElement("img")
+                overlay.src = getRandomMask(masks)
+                overlay.alt = "mask overlay."
+                overlay.style.cssText = `
+                    position: absolute;
+                    left: ${overlayValues.leftOffset * scale}px;
+                    top: ${overlayValues.topOffset * scale}px;
+                    width: ${overlayValues.width * scale}px;
+                    transform: rotate(${overlayValues.angle}deg);
+                `
+                item.appendChild(overlay)
+            }
+
+            //CORS fix
+            const image = new Image()
+            //const image2 = new Image()
+
+            image.crossOrigin = "Anonymous"
+            //image2.crossOrigin = "Anonymous"
+
+            image.addEventListener("load", handleImage(originalImage, image)) //wtf
+            //image2.addEventListener("load", alert(testTiming(originalImage, image2)));
+            image.src = originalImage.src
+
+        })
+
+        //const overlay = document.createElement("img")
+        //document.getElementById("generate-here").appendChild(fragment);
+    }
+    </script>
+</head>
+
+<body>
+    <div id="">
+        <div style="outline:none" tabindex="-1" role="group">
+            <header>
+                <h1>Trump Cats V2</h1>
+<!--                 <p>This demo uses
+                    <a href="https://github.com/justadudewhohacks/face-api.js">face-api.js</a>!</p> -->
+            </header>
+            <main class="content">
+                <div class="grid">
+<!--                     <div class="grid-item">
+                        <img src="/trump/trump_001.jpg" alt="you know.">
+                    </div> -->
+                    <!--  <div class="grid-item">
+                        <img src="/trump/trump_002.jpg" alt="you know.">
+                    </div>
+                    <div class="grid-item">
+                        <img src="/trump/trump_003.jpg" alt="you know.">
+                    </div>
+                    <div class="grid-item">
+                        <img src="/trump/trump_004.jpg" alt="you know.">
+                    </div>
+
+                    <div class="grid-item">
+                        <img src="/trump/trump_005.jpg" alt="you know.">
+                    </div>
+                    <div class="grid-item">
+                        <img src="/trump/trump_006.jpg" alt="you know.">
+                    </div>
+
+                    <div class="grid-item">
+                        <img src="/trump/trump_007.jpg" alt="you know.">
+                    </div>
+                    <div class="grid-item">
+                        <img src="/trump/trump_008.jpg" alt="you know.">
+                    </div>
+
+                    <div class="grid-item">
+                        <img src="/trump/trump_010.jpg" alt="you know.">
+                    </div> -->
+                    <!--                     <div class="grid-item">
+
+                        <img src="photo-1494790108377-be9c29b29330" alt="A woman wearing a red sweater.">
+
+                    </div>
+                    <div class="grid-item"><img src="photo-1495527400402-c7d3dc332654" alt="A pile of skulls in a forest."></div>
+                    <div class="grid-item"><img src="photo-1551864490-a587c9f6f5e7" alt="A woman wearing an orange top."><img src="overlay-werewolf.png" alt="mask overlay." style="position: absolute; left: 52.9735px; top: 60.0903px; width: 220.551px; transform: rotate(-1.72142deg);"></div>
+                    <div class="grid-item"><img src="photo-1546525848-3ce03ca516f6" alt="A man wearing a shoulder bag in a park."><small><a href="https://unsplash.com/photos/Ve7xjKImd28">Photo by Mubarak Show</a></small><img src="overlay-skull.png" alt="mask overlay." style="position: absolute; left: 104.08px; top: 14.2397px; width: 102.954px; transform: rotate(-1.13754deg);"></div>
+                    <div class="grid-item"><img src="photo-1544549269-414016cccf40" alt="A man sitting under a warning sign."><small><a href="https://unsplash.com/photos/QK3zruhjawU">Photo by Supremelysab</a></small><img src="overlay-vampire.png" alt="mask overlay." style="position: absolute; left: 117.99px; top: 50.7411px; width: 54.2884px; transform: rotate(4.26788deg);"></div>
+                    <div class="grid-item"><img src="photo-1463453091185-61582044d556" alt="A man making a face, standing in front of graffiti."><small><a href="https://unsplash.com/photos/sibVwORYqs0">Photo by Ayo Ogunseinde</a></small></div> -->
+                </div>
+            </main>
+            <!--             <footer>
+                <p>Ref: by <a href="http://gantlaborde.com/">Gant Laborde</a> and<a href="https://lengstorf.com/">Jason Lengstorf</a>.</p>
+            </footer> -->
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+if (setup_images()) {
+    catify([ //masks
+        "/images/overlay-trump-cat.png",
+        "/images/amanda-head2.png",
+    ])
+
+    // catify([ //masks
+    //     "/images/overlay-trump-cat.png",
+    //     //"/images/overlay-clown.png",
+    //     //"/images/overlay-frankenstein.png",
+    //     //"/images/overlay-pumpkin.png",
+    //     //"/images/overlay-red-monster.png",
+    //     //"/images/overlay-skull.png",
+    //     //"/images/overlay-vampire.png",
+    //     //"/images/overlay-werewolf.png",
+    // ])
+
+}
+</script>
+
+</html>

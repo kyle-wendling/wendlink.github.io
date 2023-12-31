@@ -8,7 +8,7 @@
     <meta name="description" content="Adventure Game Space Quest">
     <meta name="keywords" content="Kyle Wendling, Adventure, Point and Click">
     <meta name="author" content="Kyle Wendling">
-    <meta name="copyright" content="KRW">   
+    <meta name="copyright" content="KRW, Kyle Wendling">   
 	
 	<!-- SETUP MOBILE VIEWPORT & DISABLE TAP HIGHLIGHT COLOR ON WINDOWS MOBILE -->
     <meta name="msapplication-tap-highlight" content="no"/>
@@ -68,10 +68,10 @@
 		<!-- ************************************************************************* -->        
     	<ul class="JAG_Chapter" data-chapter='{
            	"image":"bea-right",
-			"talk_image":"guybrush_talking_right",                     
+						"talk_image":"guybrush_talking_right",                     
             "pick_up_up":"guybrush_pick_up_up",                 
             "give_image":"guybrush_open_left",
-			"open_image":"guybrush_open_left", 				            
+						"open_image":"guybrush_open_left", 				            
             "right":"bea-walk-right,bea-right", 	
             "left":"bea-walk-left,bea-left",
             "down":"bea-walk-down,bea-down",    	
@@ -88,7 +88,7 @@
             "give_right":"guybrush_open_right",
             "open_left":"guybrush_open_left",  		        
             "open_right":"guybrush_open_right",            
-			"use_image":"guybrush_open_left",
+						"use_image":"guybrush_open_left",
             "use_left":"guybrush_open_left",
             "use_right":"guybrush_open_right",
             "use_down":"guybrush_open_right",
@@ -96,21 +96,18 @@
             "text_color":"#00fcff"
 		}'>
 
-
    			<!-- ************************************************************************* -->
     		<!-- OPENING SEQUENCES -->
    			<!-- ************************************************************************* -->
-   			<!-- 
+   			<!--  -->
 
-
-            <!-- ************************************************************************* -->
-    		<!-- SPACE PORT
+        <!-- ************************************************************************* -->
+    		<!-- SPACE PORT  -->
    			<!-- ************************************************************************* -->
 
 	    	<li id="scene1" data-scene='{
             	"background":"space-port.png","horizon":"30,100",
                 "subtitle":"Get to the ship!", "subtitle_speed":"700,4500", "subtitle_color":"#ffff00", "subtitle_pos":"55"}'>
-
 
             	<!-- MAIN CHARACTER -->
     	        <div class="JAG_Char" data-character='{
@@ -134,12 +131,14 @@
                 	"image":"scene1_bush3", "pos":"63.6,8.85", "type":"layer"}'></div>
 -->
 
-                <!-- EXITS -->
-                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"55,30", "goto":"inshipfun", 
+                <!-- EXITS spaceport -->
+                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"55,30", "goto":"spaceport", 
                 	"text":"I can fly one of these", "next_image":"bea-down"}'></div>
 
+								<!-- <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"55,30", "goto":"inshipfun", 
+                	"text":"I can fly one of these", "next_image":"bea-down"}'></div> -->
+
 	        </li>
-            
             
    			<!-- ************************************************************************* -->
     		<!-- SPACE FLIGHT -->
@@ -147,7 +146,7 @@
    	
             <li id="inshipfun" data-scene='{
             	"cutscene":true, "ambient":"earth_below_us", "loop_music":true,  
-                "display_time":"4600", "speed":"700,500", 
+                "display_time":"3600", "speed":"700,500", 
                 "background":"inshipfun-scene.jpg"}'></li>
  			<!-- 
             <li id="space" data-scene='{
@@ -155,9 +154,8 @@
                 "display_time":"4600", "speed":"700,500", 
                 "background":"casini.png","foreground":"2_foreground.png"}'></li> -->
             
-            
-            <!-- ************************************************************************* -->
-    		<!-- SPACE FLIGHT SATURN
+        <!-- ************************************************************************* -->
+    		<!-- SPACE FLIGHT SATURN  -->
    			<!-- ************************************************************************* -->            
 	    	<li id="scene2" data-scene='{
             	"background":"cassini.jpg", "horizon":"-10,120",
@@ -180,8 +178,8 @@
 
 
             
-            <!-- ************************************************************************* -->
-    		<!-- CRASH ON PLANET
+        <!-- ************************************************************************* -->
+    		<!-- CRASH ON PLANET--> 
    			<!-- ************************************************************************* -->            
 	    	<li id="crashsite" data-scene='{
             	"background":"crash.png", "horizon":"-10,120"}'>
@@ -198,8 +196,8 @@
                 	"text":"red planet", "next_image":"bea-up", "next_pos":"12,90"}'></div>
             </li>
        
-            <!-- ************************************************************************* -->
-    		<!-- PLANET WALK - petite prince
+        <!-- ************************************************************************* -->
+    		<!-- PLANET WALK - petite prince--> 
    			<!-- ************************************************************************* -->            
 	    	<li id="planet" data-scene='{
             	"background":"planet.jpg", "horizon":"-10,120","horizon":"35,110",
@@ -219,8 +217,8 @@
 
             </li>
          
-            <!-- ************************************************************************* -->
-    		<!-- CASA BONITA
+        <!-- ************************************************************************* -->
+    		<!-- CASA BONITA --> 
    			<!-- ************************************************************************* -->            
 	    	<li id="spaceport" data-scene='{
             	"background":"casa-bonita.jpg", "foreground":"casa-bonita-foreground.png", "horizon":"35,110"
@@ -234,53 +232,50 @@
                     	["say_after:...sure could go for some sopapillas and cliff diving!"]], "direction":"down"}'></div>   
 
 		                <!-- EXITS -->
-		                <div class="JAG_Item ss_exit1" data-item='{"type":"exit", "pos":"50,60", "goto":"bar", 
-		                	"text":"Casa bonita!", "next_image":"bea-down"}'></div>
-		                <div class="JAG_Item ss_exit2" data-item='{"type":"exit", "pos":"4,85", "goto":"planet", "text":"you can never go back...", "next_image":"bea-down"}'></div>		
-            </li>
+		                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"40,55", "goto":"bar", 
+		                	"text":"Casa bonita!", "next_image":"bea-up"}'></div>
+										
+											<div class="JAG_Item s1_exit2" data-item='{"type":"exit", "pos":"4,85", "goto":"planet", "text":"you can never go back...", "next_image":"bea-down"}'></div>		
+        </li>
             
-            <!-- ************************************************************************* -->
-    		<!-- WEATHER UP
+        <!-- ************************************************************************* -->
+    		<!-- WEATHER UP --> 
    			<!-- ************************************************************************* -->            
-	    	<li id="bar" data-scene='{
-            	"background":"adventure-fun.jpg","horizon":"40,110"
-                }'>
+	    	<li id="bar" data-scene='{"background":"adventure-fun.jpg","horizon":"40,110"}'>
 
-                <!-- MAIN CHARACTER -->
+            <!-- MAIN CHARACTER -->
     	        <div class="JAG_Char" data-character='{
                 	"scale":"0.33,2.5", "pos":"50,99", "speed":8000,
                     "entrance":[
-						["walk_to:49,95,500"],
+											["walk_to:49,95,500"],
                     	["say_after:...hmm, k"]
-						], "direction":"down"}'></div>   
+										], "direction":"down"}'></div>   
 
 		                <!-- EXITS -->
 		                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"20,44", "goto":"theend", 
 		                	"text":"what will it be?", "next_image":"bea-left"}'></div>
 		                <div class="JAG_Item s1_exit2" data-item='{"type":"exit", "pos":"50,98", "goto":"spaceport", 
 		                	"text":"hive of scum", "next_image":"bea-down"}'></div>		
-            </li>
-            
-            <!-- ************************************************************************* -->
-    		<!-- THEEND
+        </li>
+
+        <!-- ************************************************************************* -->
+    		<!-- THEEND -->  
    			<!-- ************************************************************************* -->            
-	    	<li id="theend" data-scene='{
-            	"background":"the-end.jpg", "horizon":"40,110",
-                "subtitle":"Wow, hello stranger, no idea how you got here, but email x-spaced@wendlink.com for a prize.", "subtitle_speed":"200,500000", "subtitle_color":"#ffffff", "subtitle_pos":"10", "subtitle_repeat":true}'>
+				<li id="theend"
+					data-scene='{
+						"background":"the-end.jpg", "horizon":"40,110",
+						"subtitle":"Wow, hello stranger, no idea how you got here, but email x-spaced@wendlink.com for a prize.", "subtitle_speed":"200,500000", "subtitle_color":"#ffffff", "subtitle_pos":"10", "subtitle_repeat":true}'>
 
-                <!-- MAIN CHARACTER -->
-    	        <div class="JAG_Char" data-character='{
-                	"scale":"1.0,1.2", "pos":"90,80", "speed":8000,
-                    "entrance":[
-						["walk_to:80,80,500"],
-                    	["say_after:..."]], "direction":"left"}'></div> 
+					<!-- MAIN CHARACTER -->
+					<div class="JAG_Char" data-character='{
+				"scale":"1.0,1.2", "pos":"90,80", "speed":8000,
+				"entrance":[["walk_to:80,80,500"],["say_after:..."]], "direction":"left"}'>
+					</div>
 
-
-		                <!-- EXITS -->
-		                <div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"94,73", "goto":"bar", 
-		                	"text":"outta here", "next_image":"bea-down"}'></div>
-	
-            </li>                
+					<!-- EXITS -->
+					<div class="JAG_Item s1_exit1" data-item='{"type":"exit", "pos":"94,73", "goto":"bar", 
+				"text":"outta here", "next_image":"bea-down"}'></div>
+				</li>
                 
                 
 	    </ul><!-- END CHAPTER -->
